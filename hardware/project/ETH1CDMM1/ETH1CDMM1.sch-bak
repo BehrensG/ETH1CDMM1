@@ -123,6 +123,7 @@ F9 "SLE_~CS" I L 7300 1150 50
 F10 "SLE_SI" I L 7300 1250 50 
 F11 "SLE_SO" O L 7300 1350 50 
 F12 "SLE_~RST" I L 7300 1450 50 
+F13 "+10VREF" I L 7300 950 50 
 $EndSheet
 $Sheet
 S 3800 650  1500 1100
@@ -171,8 +172,6 @@ Wire Wire Line
 	7300 750  5300 750 
 Wire Wire Line
 	3800 750  3500 750 
-Wire Wire Line
-	3500 950  3800 950 
 $Sheet
 S 3800 2200 1500 800 
 U 5F2D993F
@@ -521,4 +520,17 @@ F 3 "" H 3200 6050 50  0001 C CNN
 	1    3200 6050
 	1    0    0    -1  
 $EndComp
+Wire Wire Line
+	3650 950  3650 500 
+Wire Wire Line
+	3650 500  7150 500 
+Wire Wire Line
+	7150 500  7150 950 
+Wire Wire Line
+	7150 950  7300 950 
+Wire Wire Line
+	3500 950  3650 950 
+Connection ~ 3650 950 
+Wire Wire Line
+	3650 950  3800 950 
 $EndSCHEMATC
