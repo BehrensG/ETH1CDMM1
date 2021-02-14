@@ -411,40 +411,6 @@ Wire Wire Line
 	7350 3350 7350 3250
 Wire Wire Line
 	8050 3350 8050 3250
-Wire Wire Line
-	3150 2300 3100 2300
-Wire Wire Line
-	3100 2300 3100 2350
-Wire Wire Line
-	3100 2400 3150 2400
-Wire Wire Line
-	3100 2350 2900 2350
-Connection ~ 3100 2350
-Wire Wire Line
-	3100 2350 3100 2400
-Text Label 2900 2350 0    50   ~ 0
-G
-Wire Wire Line
-	3150 2500 3100 2500
-Wire Wire Line
-	3100 2600 3150 2600
-Wire Wire Line
-	3150 2700 3100 2700
-Wire Wire Line
-	3100 2800 3150 2800
-Wire Wire Line
-	3150 2900 3100 2900
-Wire Wire Line
-	3100 2900 3100 2950
-Wire Wire Line
-	3100 3000 3150 3000
-Wire Wire Line
-	3100 2950 2900 2950
-Connection ~ 3100 2950
-Wire Wire Line
-	3100 2950 3100 3000
-Text Label 2900 2950 0    50   ~ 0
-K
 $Comp
 L Connector:C64AC J1201
 U 1 1 5DE8758D
@@ -456,23 +422,6 @@ F 3 " ~" H 3450 4150 50  0001 C CNN
 	1    3450 4100
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	3150 3100 3100 3100
-Wire Wire Line
-	3100 3200 3150 3200
-Wire Wire Line
-	3150 3400 3100 3400
-Wire Wire Line
-	3100 3400 3100 3350
-Wire Wire Line
-	3100 3300 3150 3300
-Wire Wire Line
-	3100 3350 2900 3350
-Connection ~ 3100 3350
-Wire Wire Line
-	3100 3350 3100 3300
-Text Label 2900 3350 0    50   ~ 0
-M
 $Comp
 L ETH1CDMM1:HE3621A0510 K1202
 U 1 1 5E9A8BD7
@@ -619,8 +568,6 @@ Wire Wire Line
 	9150 3850 7350 3850
 Wire Wire Line
 	9150 3750 8050 3750
-Wire Wire Line
-	3100 3100 3100 3200
 $Comp
 L power:GNDPWR #PWR01203
 U 1 1 5F6589E1
@@ -632,8 +579,16 @@ F 3 "" H 3050 6200 50  0001 C CNN
 	1    3050 6250
 	0    1    1    0   
 $EndComp
-Wire Wire Line
-	3100 2700 3100 2800
-Wire Wire Line
-	3100 2500 3100 2600
+NoConn ~ 3150 2500
+NoConn ~ 3150 2600
+NoConn ~ 3150 2700
+NoConn ~ 3150 2800
+NoConn ~ 3150 2900
+NoConn ~ 3150 3000
+NoConn ~ 3150 3100
+NoConn ~ 3150 3200
+NoConn ~ 3150 3300
+NoConn ~ 3150 3400
+NoConn ~ 3150 2300
+NoConn ~ 3150 2400
 $EndSCHEMATC
