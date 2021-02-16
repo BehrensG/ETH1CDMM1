@@ -55,7 +55,7 @@ SPI_HandleTypeDef hspi1;
 SPI_HandleTypeDef hspi4;
 SPI_HandleTypeDef hspi5;
 
-USART_HandleTypeDef husart2;
+UART_HandleTypeDef huart2;
 
 SDRAM_HandleTypeDef hsdram1;
 
@@ -100,6 +100,13 @@ const osMessageQueueAttr_t QueueTrigger_attributes = {
 };
 /* USER CODE BEGIN PV */
 
+uint8_t rx_data[6] = {0x00};
+uint8_t it_array_mul[10]={1, 1, 1, 1, 2, 5, 10, 0};
+double it_array_refcor[3]={1, 1.01582, 1};
+uint32_t count_fail= 0;
+uint8_t new_data = 0;
+struct cfg_struct dmm;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -110,7 +117,7 @@ static void MX_FMC_Init(void);
 static void MX_I2C3_Init(void);
 static void MX_SPI1_Init(void);
 static void MX_SPI5_Init(void);
-static void MX_USART2_Init(void);
+static void MX_USART2_UART_Init(void);
 static void MX_SPI4_Init(void);
 void StartDefaultTask(void *argument);
 void StartLEDTask(void *argument);
@@ -123,7 +130,7 @@ void StartMeasurTask(void *argument);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+void DMM_Init();
 /* USER CODE END 0 */
 
 /**
@@ -166,11 +173,12 @@ int main(void)
   MX_I2C3_Init();
   MX_SPI1_Init();
   MX_SPI5_Init();
- // MX_USART2_Init();
+  MX_USART2_UART_Init();
   MX_SPI4_Init();
   /* USER CODE BEGIN 2 */
   BSP_Init();
   MX_LWIP_Init();
+  DMM_Init();
   /* USER CODE END 2 */
 
   /* Init scheduler */
@@ -198,10 +206,10 @@ int main(void)
 
   /* Create the thread(s) */
   /* creation of defaultTask */
- // defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
+  //defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
 
   /* creation of LEDTask */
-  LEDTaskHandle = osThreadNew(StartLEDTask, NULL, &LEDTask_attributes);
+  //LEDTaskHandle = osThreadNew(StartLEDTask, NULL, &LEDTask_attributes);
 
   /* creation of TriggerTask */
   TriggerTaskHandle = osThreadNew(StartTriggerTask, NULL, &TriggerTask_attributes);
@@ -215,6 +223,10 @@ int main(void)
   osThreadSuspend(TriggerTaskHandle);
 
   /* USER CODE END RTOS_THREADS */
+
+  /* USER CODE BEGIN RTOS_EVENTS */
+  /* add events, ... */
+  /* USER CODE END RTOS_EVENTS */
 
   /* Start scheduler */
   osKernelStart();
@@ -446,7 +458,7 @@ static void MX_SPI4_Init(void)
   hspi4.Init.CLKPolarity = SPI_POLARITY_LOW;
   hspi4.Init.CLKPhase = SPI_PHASE_2EDGE;
   hspi4.Init.NSS = SPI_NSS_SOFT;
-  hspi4.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_32;
+  hspi4.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_16;
   hspi4.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi4.Init.TIMode = SPI_TIMODE_DISABLE;
   hspi4.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
@@ -508,7 +520,7 @@ static void MX_SPI5_Init(void)
   * @param None
   * @retval None
   */
-static void MX_USART2_Init(void)
+static void MX_USART2_UART_Init(void)
 {
 
   /* USER CODE BEGIN USART2_Init 0 */
@@ -518,16 +530,17 @@ static void MX_USART2_Init(void)
   /* USER CODE BEGIN USART2_Init 1 */
 
   /* USER CODE END USART2_Init 1 */
-  husart2.Instance = USART2;
-  husart2.Init.BaudRate = 115200;
-  husart2.Init.WordLength = USART_WORDLENGTH_8B;
-  husart2.Init.StopBits = USART_STOPBITS_1;
-  husart2.Init.Parity = USART_PARITY_NONE;
-  husart2.Init.Mode = USART_MODE_TX_RX;
-  husart2.Init.CLKPolarity = USART_POLARITY_LOW;
-  husart2.Init.CLKPhase = USART_PHASE_1EDGE;
-  husart2.Init.CLKLastBit = USART_LASTBIT_DISABLE;
-  if (HAL_USART_Init(&husart2) != HAL_OK)
+  huart2.Instance = USART2;
+  huart2.Init.BaudRate = 62500;
+  huart2.Init.WordLength = UART_WORDLENGTH_8B;
+  huart2.Init.StopBits = UART_STOPBITS_1;
+  huart2.Init.Parity = UART_PARITY_NONE;
+  huart2.Init.Mode = UART_MODE_TX_RX;
+  huart2.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+  huart2.Init.OverSampling = UART_OVERSAMPLING_16;
+  huart2.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
+  huart2.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
+  if (HAL_UART_Init(&huart2) != HAL_OK)
   {
     Error_Handler();
   }
@@ -778,7 +791,57 @@ static void BSP_SDRAM_Initialization(SDRAM_HandleTypeDef *hsdram, FMC_SDRAM_Comm
   HAL_SDRAM_ProgramRefreshRate(hsdram, REFRESH_COUNT);
 }
 
+void DMM_Init()
+{
 
+	 dmm.calibration.structure.adc_step = CAL_PREDEF_STEP;
+	 dmm.calibration.structure.adc_z_offset = CAL_PREDEF_NZO;
+	 dmm.calibration.structure.v_1V_offset = CAL_PREDEF_1VO;
+	 dmm.calibration.structure.v_1V_gain = CAL_PREDEF_1VG;
+	 dmm.calibration.structure.v_10V_offset = CAL_PREDEF_10VO;
+	 dmm.calibration.structure.v_10V_gain = CAL_PREDEF_10VG;
+	 dmm.calibration.structure.v_100V_offset = CAL_PREDEF_100VO;
+	 dmm.calibration.structure.v_100V_gain = CAL_PREDEF_100VG;
+
+	 dmm.adc_cf[0] = 1.000145;
+	 dmm.adc_cf[1] = 1.000060;
+	 dmm.adc_cf[2] = 1.000015;
+	 dmm.adc_cf[3] = 1.0;
+	 dmm.adc_cf[4] = 1.0;
+	 dmm.adc_cf[5] = 1.0;
+	 dmm.adc_cf[6] = 1.0;
+
+	 dmm.adc_raw[0] = 1;
+	 dmm.adc_raw[1] = 2;
+	 dmm.adc_raw[2] = 5;
+	 dmm.adc_raw[3] = 10;
+	 dmm.adc_raw[4] = 10;
+	 dmm.adc_raw[5] = 10;
+	 dmm.adc_raw[6] = 10;
+
+	 dmm.adc_nplc[0] = 1;
+	 dmm.adc_nplc[1] = 2;
+	 dmm.adc_nplc[2] = 5;
+	 dmm.adc_nplc[3] = 10;
+	 dmm.adc_nplc[4] = 20;
+	 dmm.adc_nplc[5] = 50;
+	 dmm.adc_nplc[6] = 100;
+
+	 dmm.nplc = 10;
+	 dmm.range = 100;
+	 dmm.range_index = 2;
+	 dmm.nplc_index = 3;
+	 dmm.samples = 1;
+	 dmm.zero_val = 0.0;
+	 dmm.zero_done = 0;
+	 dmm.zero_status = ZERO_ON;
+
+
+	//meas_path(dmm.range, NORM_MEAS);
+
+	HAL_GPIO_WritePin(FPGA_IO1_GPIO_Port, FPGA_IO1_Pin, 1);
+
+}
 
 /* USER CODE END 4 */
 
@@ -865,12 +928,24 @@ void StartMeasurTask(void *argument)
   /* Infinite loop */
   for(;;)
   {
-    osDelay(pdMS_TO_TICKS(100));
+	  HAL_UART_Init(&huart2);
+	  if(HAL_OK ==HAL_UART_Receive(&huart2, (uint8_t *)rx_data, 6, 600))
+	  {
+		  HAL_GPIO_TogglePin(LED_GREEN_GPIO_Port, LED_GREEN_Pin);
+		  new_data = 1;
+	  }
+	  else
+	  {
+		  HAL_GPIO_TogglePin(LED_RED_GPIO_Port, LED_RED_Pin);
+		  count_fail++;
+	  }
+	  HAL_UART_DeInit(&huart2);
+	  osDelay(pdMS_TO_TICKS(5));
   }
   /* USER CODE END StartMeasurTask */
 }
 
-/**
+ /**
   * @brief  Period elapsed callback in non blocking mode
   * @note   This function is called  when TIM1 interrupt took place, inside
   * HAL_TIM_IRQHandler(). It makes a direct call to HAL_IncTick() to increment
