@@ -2362,4 +2362,6 @@ F 3 "" H 8550 8550 50  0001 C CNN
 $EndComp
 Text Notes 3850 4700 0    50   ~ 0
 9012 - too high, replace with 9011
+Text Notes 12450 1950 0    50   ~ 0
+The connection to U1001A is wrong.
 $EndSCHEMATC

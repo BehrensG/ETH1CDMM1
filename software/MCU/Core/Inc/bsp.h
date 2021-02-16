@@ -80,6 +80,30 @@
 #define STRUCT_SIZE 285
 
 
+#define		CAL_PREDEF_1VO		0
+#define		CAL_PREDEF_1VG		1
+#define		CAL_PREDEF_10VO		0
+#define		CAL_PREDEF_10VG		1
+#define		CAL_PREDEF_100VO	0
+#define		CAL_PREDEF_100VG	1
+#define		CAL_PREDEF_NZO		-170.0
+#define		CAL_PREDEF_STEP		38500
+
+enum measure_mode
+{
+	AUTO_ZERO = 1,
+	NORM_MEAS,
+	ADC_MEAS
+
+};
+
+enum zero_states
+{
+	ZERO_OFF = 0,
+	ZERO_ON,
+	ZERO_ONCE
+};
+
 enum dmm_function_enum
 {
 	dc_voltage = 1,
@@ -184,6 +208,41 @@ struct bsp_status
 	bsp_relay_t relay;
 
 }board_current;
+
+union cal_data
+{
+	struct cal_struct
+	{
+	int32_t	adc_z_offset;
+	int32_t	adc_step;
+	double	v_1V_offset;
+	double	v_1V_gain;
+	double	v_10V_offset;
+	double	v_10V_gain;
+	double	v_100V_offset;
+	double	v_100V_gain;
+	}structure;
+
+	uint8_t bytes[72];
+};
+
+struct cfg_struct
+{
+	uint32_t range;
+	uint8_t range_index;
+	uint8_t nplc_index;
+	uint32_t samples;
+	uint8_t nplc;
+	uint8_t zero_status;
+	double zero_val;
+	double adc_raw[7];
+	double adc_cf[7];
+	uint8_t adc_nplc[7];
+	uint8_t zero_done;
+	union cal_data calibration;
+};
+
+
 
 #pragma pack(pop)
 

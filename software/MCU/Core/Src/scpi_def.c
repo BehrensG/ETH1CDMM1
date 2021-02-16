@@ -55,6 +55,10 @@
 
 #include "bsp_switch.h"
 
+
+
+
+
 scpi_choice_def_t boolean_select[] =
 {
     {"OFF", 0},
