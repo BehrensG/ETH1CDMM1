@@ -828,7 +828,7 @@ void DMM_Init()
 	 dmm.adc_nplc[6] = 100;
 
 	 dmm.nplc = 10;
-	 dmm.range = 100;
+	 dmm.range = 10;
 	 dmm.range_index = 2;
 	 dmm.nplc_index = 3;
 	 dmm.samples = 1;

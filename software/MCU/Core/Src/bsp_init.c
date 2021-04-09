@@ -12,6 +12,8 @@
 #include "bsp_init.h"
 #include "bsp_switch.h"
 
+extern struct cfg_struct dmm;
+
 void BSP_InitStaticData(union bsp_data* union_default_data, union bsp_data* union_data)
 {
 	strncpy(union_default_data->structure.info.device, SCPI_IDN2, SCPI_DEVICE_STRING_LENGTH);
@@ -67,6 +69,7 @@ void BSP_InitCurrentData(struct bsp_status* struct_data)
 	struct_data->dmm.gain = 1;
 	struct_data->dmm.switch_path =  L_RLY | DCV_L_CTR | MC_CTR;
 	struct_data->ip4 = board_static.structure.ip4;
+
 
 }
 

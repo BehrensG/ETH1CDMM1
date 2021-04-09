@@ -63,6 +63,7 @@ MEMORY
 {
   RAM	(xrw)	: ORIGIN = 0x20000000,	LENGTH = 512K
   FLASH	(rx)	: ORIGIN = 0x8000000,	LENGTH = 1024K
+  XRAM (xrw)     : ORIGIN = 0xD0000000, LENGTH = 8M
 }
 
 /* Sections */
@@ -188,6 +189,12 @@ SECTIONS
     . = ALIGN(8);
   } >RAM
 
+    .xram (NOLOAD) : {
+    . = ALIGN(4);
+    *(.xram*);
+    . = ALIGN(4);
+    }>XRAM
+    
   /* Remove information from the compiler libraries */
   /DISCARD/ :
   {

@@ -82,8 +82,8 @@
 
 #define		CAL_PREDEF_1VO		0
 #define		CAL_PREDEF_1VG		1
-#define		CAL_PREDEF_10VO		0
-#define		CAL_PREDEF_10VG		1
+#define		CAL_PREDEF_10VO		0.018037
+#define		CAL_PREDEF_10VG		0.987291
 #define		CAL_PREDEF_100VO	0
 #define		CAL_PREDEF_100VG	1
 #define		CAL_PREDEF_NZO		-170.0
@@ -110,7 +110,7 @@ enum dmm_function_enum
 	dc_current = 2,
 	resistance_2w = 3,
 	resistance_4w = 4,
-	autozero = 5
+	zero_offset = 5
 };
 
 #pragma pack(push, 1)

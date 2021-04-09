@@ -212,7 +212,7 @@ scpi_result_t SCPI_MeasureVoltageDCQ(scpi_t * context)
 
 		adc_in = get_measure(dmm.range, dmm.adc_cf[dmm.nplc_index], dmm.nplc_index);
 		adc_in = adc_in/1000;
-		adc_in = adc_in + dmm.zero_val;
+		//adc_in = adc_in + dmm.zero_val;
 
 		switch (dmm.range)
 		{
@@ -239,7 +239,7 @@ scpi_result_t SCPI_MeasureVoltageDCQ(scpi_t * context)
 
 		}
 
-		results[index] = adc_in;
+		results[index] = (-1)*adc_in;
 		index++;
 	}
 

@@ -157,6 +157,11 @@ void SWITCH_SelectFunction(uint8_t dmm_function, uint16_t switch_path, uint8_t g
 								SWITCH_DG419_Control(1);
 								SWITCH_TMUX6104_Control(TMUX6104_MUX2, gain);
 								SWITCH_MCZ33996_Control(switch_path, SWITCH_ON); break;
+			case zero_offset:
+								SWITCH_9012_Control(1);
+								SWITCH_DG419_Control(1);
+								SWITCH_TMUX6104_Control(TMUX6104_MUX1, gain);
+								SWITCH_MCZ33996_Control(switch_path, SWITCH_ON); break;
 			default: break;
 		}
 	}
